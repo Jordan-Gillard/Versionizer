@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 
-from test_generator import TestGenerator
+from automated_test_generator import AutomatedTestGenerator
 
 parser = argparse.ArgumentParser(
     description="Automatically generate test cases to ensure the correctness of migrate code.",
@@ -52,5 +52,5 @@ parser.add_argument(
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    test_generator = TestGenerator(args)
+    test_generator = AutomatedTestGenerator(args)
     test_generator.generate_tests()
