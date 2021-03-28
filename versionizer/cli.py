@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 
+from versionizer.automated_test_executor import AutomatedTestExecutor
 from versionizer.automated_test_generator import AutomatedTestGenerator
 
 parser = argparse.ArgumentParser(
@@ -45,19 +46,17 @@ parser.set_defaults(run_tests=True)
 parser.add_argument(
     "-l",
     "--library",
-    # required=True,
+    required=True,
     help="The library being upgraded. Note: this library's name must appear exactly as it does in it's package repository.",
 )
 parser.add_argument(
     "-p",
     "--previous-version",
-    # required=True,
     help="The version being upgraded from.",
 )
 parser.add_argument(
     "-n",
     "--new-version",
-    # required=True,
     help="The version being upgraded to. If not specified, Versionizer will default to the most recent version available in the package repository.",
 )
 parser.add_argument(
@@ -75,13 +74,33 @@ parser.add_argument(
 )
 
 
+def generate_tests(args):
+    test_generator = AutomatedTestGenerator(args)
+    test_generator.generate_tests()
+
+
+def run_tests(args):
+    test_executor = AutomatedTestExecutor(args)
+    test_executor.run_tests()
+
+
+def validate_args(args):
+    if args.generate_tests:
+        if not args.module:
+            parser.error(
+                "If generate-tests flag is set, then you must specify the module or file to generate tests for.")
+    if not args.run_tests and not args.generate_tests:
+        parser.error(
+            "Please specify whether you want Versionizer to generate or run tests.")
+
+
 def main():
     args = parser.parse_args()
+    validate_args(args)
     if args.generate_tests:
-        test_generator = AutomatedTestGenerator(args)
-        test_generator.generate_tests()
-    else:
-        print("no tests")
+        generate_tests(args)
+    if args.run_tests:
+        run_tests(args)
 
 
 if __name__ == "__main__":
