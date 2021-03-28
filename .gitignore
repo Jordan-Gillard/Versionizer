@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# pynguin generated files
+generated_tests
+pynguin-report
