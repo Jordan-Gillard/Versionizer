@@ -18,11 +18,12 @@ class AutomatedTestExecutor:
             print("Previous version and new version are not set. Versionizer"
                   " will run tests with the latest version of the library.")
 
-    def _install_python_library(self, library, version=None):
+    @staticmethod
+    def _install_python_library(library, version=None):
         if version:
             os.system(f"pip install -q {library}=={version}")
         else:
-            os.system(f"pip install -q {self.namespace.library}")
+            os.system(f"pip install -q {library}")
 
     def _run_tests_in_test_dir(self, test_dir):
         os.system(f"pytest --quiet {self.namespace.output_path}")
