@@ -37,7 +37,7 @@ class AutomatedTestGenerator:
 
     def generate_tests(self):
         commands = [
-            "pynguin",
+            "pynguin -q ",
             f"--algorithm {self.namespace.algorithm}",
             f"--project-path ./",
             f"--output-path {self.namespace.output_path}",
