@@ -1,6 +1,8 @@
 import os
 from argparse import Namespace
 
+from versionizer.utils import no_stdout
+
 
 class AutomatedTestGenerator:
     def __init__(self, namespace: Namespace):
@@ -36,13 +38,14 @@ class AutomatedTestGenerator:
         os.system(" ".join(commands))
 
     def generate_tests(self):
-        commands = [
-            "pynguin -q ",
-            f"--algorithm {self.namespace.algorithm}",
-            f"--project-path ./",
-            f"--output-path {self.namespace.output_path}",
-        ]
-        if self._is_file(self.namespace.module):
-            self._generate_all_tests_for_file(commands)
-        else:
-            self._generate_all_tests_in_module(commands)
+        with no_stdout():
+            commands = [
+                "pynguin",
+                f"--algorithm {self.namespace.algorithm}",
+                f"--project-path ./",
+                f"--output-path {self.namespace.output_path}",
+            ]
+            if self._is_file(self.namespace.module):
+                self._generate_all_tests_for_file(commands)
+            else:
+                self._generate_all_tests_in_module(commands)

@@ -25,12 +25,13 @@ class AutomatedTestExecutor:
         else:
             os.system(f"pip install -q {library}")
 
-    def _run_tests_in_test_dir(self, test_dir):
-        os.system(f"pytest --quiet {self.namespace.output_path}")
+    @staticmethod
+    def _run_tests_in_test_dir(test_dir):
+        os.system(f"pytest --quiet {test_dir}")
 
     def _run_tests_for_version(self, version):
         print(Style.BRIGHT + Fore.BLUE +
-              f"Runnings tests with {self.namespace.library}:{version}")
+              f"Running tests with {self.namespace.library}:{version}")
         self._install_python_library(self.namespace.library,
                                      version)
         self._run_tests_in_test_dir(self.namespace.output_path)
@@ -50,3 +51,6 @@ class AutomatedTestExecutor:
             self._run_tests_for_version(self.namespace.new_version)
         else:
             self._run_tests_for_latest_version()
+        # Return environment to using previous version
+        self._install_python_library(self.namespace.library,
+                                     self.namespace.previous_version)

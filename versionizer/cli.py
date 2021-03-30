@@ -3,6 +3,7 @@ import argparse
 
 from versionizer.automated_test_executor import AutomatedTestExecutor
 from versionizer.automated_test_generator import AutomatedTestGenerator
+from versionizer.utils import print_banner
 
 parser = argparse.ArgumentParser(
     description="Automatically generate test cases to ensure the correctness of migrate code.",
@@ -97,6 +98,7 @@ def validate_args(args):
 def main():
     args = parser.parse_args()
     validate_args(args)
+    print_banner()
     if args.generate_tests:
         generate_tests(args)
     if args.run_tests:
