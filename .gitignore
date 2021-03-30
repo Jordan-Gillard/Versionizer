@@ -131,3 +131,4 @@ dmypy.json
 # pynguin generated files
 generated_tests
 pynguin-report
+sample_files/test_*

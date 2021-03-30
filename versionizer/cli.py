@@ -16,6 +16,11 @@ parser.add_argument(
          "If module ends with a filename, i.e. some_dir/some_file.py, Versionizer "
          "will only generate tests for that file.",
 )
+parser.add_argument(
+    "--project-path",
+    help="The directory to generate tests for.",
+    required=True
+)
 # TODO: user can either generate or run the tests, or both -> but not either
 parser.add_argument(
     "-gt"
@@ -60,12 +65,6 @@ parser.add_argument(
     "--new-version",
     help="The version being upgraded to. If not specified, Versionizer will default to the most recent version available in the package repository.",
 )
-parser.add_argument(
-    "-o",
-    "--output-path",
-    default="generated_tests",
-    help="The path where generated test files will be created.",
-)
 
 parser.add_argument(
     "--algorithm",
@@ -86,10 +85,6 @@ def run_tests(args):
 
 
 def validate_args(args):
-    if args.generate_tests:
-        if not args.module:
-            parser.error(
-                "If generate-tests flag is set, then you must specify the module or file to generate tests for.")
     if not args.run_tests and not args.generate_tests:
         parser.error(
             "Please specify whether you want Versionizer to generate or run tests.")

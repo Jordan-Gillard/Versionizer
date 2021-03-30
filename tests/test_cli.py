@@ -5,7 +5,7 @@ from versionizer.cli import parser
 
 @pytest.fixture()
 def default_args():
-    return ["--library", "fake_lib"]
+    return ["--library", "fake_lib", "--project-path", "sample_files/"]
 
 
 def test_parser_defaults(default_args):
@@ -57,7 +57,7 @@ def test_parser_stores_module_with_file(default_args):
 
 def test_parser_stores_library(default_args):
     library = "freezegun"
-    args = parser.parse_args(['-l', library])
+    args = parser.parse_args(['-l', library, "--project-path", "sample_files/"])
     assert args.library == library
 
 
@@ -73,13 +73,6 @@ def test_parser_stores_new_version(default_args):
     default_args.extend(['-n', version])
     args = parser.parse_args(default_args)
     assert args.new_version == version
-
-
-def test_parser_stores_output_path(default_args):
-    path = "some_dir/some_test_dir/"
-    default_args.extend(['-o', path])
-    args = parser.parse_args(default_args)
-    assert args.output_path == path
 
 
 def test_parser_throws_error_with_bad_algorithm(default_args):

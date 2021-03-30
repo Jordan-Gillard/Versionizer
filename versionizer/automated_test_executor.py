@@ -1,17 +1,12 @@
 import os
 from argparse import Namespace
 
-from colorama import Fore, Style
+from versionizer.utils import print_bright_blue
 
 
 class AutomatedTestExecutor:
     def __init__(self, namespace: Namespace):
         self.namespace = namespace
-
-    def _create_init_file_in_test_dir_if_not_exists(self):
-        init_file_loc = os.path.join(self.namespace.output_path, '__init__.py')
-        if not os.path.exists(init_file_loc):
-            open(init_file_loc, 'a').close()
 
     def _check_for_versions(self):
         if not self.namespace.previous_version and not self.namespace.new_version:
@@ -27,23 +22,23 @@ class AutomatedTestExecutor:
 
     @staticmethod
     def _run_tests_in_test_dir(test_dir):
-        os.system(f"pytest --quiet {test_dir}")
+        os.system(f"pytest --quiet --color=yes {test_dir}")
 
     def _run_tests_for_version(self, version):
-        print(Style.BRIGHT + Fore.BLUE +
-              f"Running tests with {self.namespace.library}:{version}")
+        print_bright_blue(
+            f"Running tests with {self.namespace.library}:{version}")
         self._install_python_library(self.namespace.library,
                                      version)
-        self._run_tests_in_test_dir(self.namespace.output_path)
+        self._run_tests_in_test_dir(self.namespace.project_path)
 
     def _run_tests_for_latest_version(self):
-        print(
+        print_bright_blue(
             f"Running tests with latest version of {self.namespace.library}")
         self._install_python_library(self.namespace.library)
-        self._run_tests_in_test_dir(self.namespace.output_path)
+        self._run_tests_in_test_dir(self.namespace.project_path)
 
     def run_tests(self):
-        self._create_init_file_in_test_dir_if_not_exists()
+        print_bright_blue("Beginning test run.")
         self._check_for_versions()
         if self.namespace.previous_version:
             self._run_tests_for_version(self.namespace.previous_version)
