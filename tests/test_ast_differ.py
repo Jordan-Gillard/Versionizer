@@ -23,17 +23,15 @@ def foo():
 
 @pytest.fixture
 def temp_file2():
-    fd, path = tempfile.mkstemp()
-    try:
-        func = """
+    tmp = tempfile.NamedTemporaryFile()
+    func = """
 def foo():
     return 2
-                    """
-        with os.fdopen(fd, 'w') as tmp:
-            tmp.write(func)
-        yield path
-    finally:
-        os.remove(path)
+    """
+    tmp.write(str.encode(func))
+    tmp.seek(0)
+    yield tmp.name
+    tmp.close()
 
 
 def test_temp_file_fixtures(temp_file1):
