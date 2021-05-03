@@ -17,6 +17,7 @@ class GitHandler:
     def _checkout_commit(self, commit: Commit):
         self.repo.head.reference = commit
         self.repo.head.reset(index=True, working_tree=True)
+        print(f"Switched to commit: {self.repo.head.commit.name_rev}")
 
     def checkout_first_commit(self):
         self._checkout_commit(self.first_commit)
@@ -31,5 +32,4 @@ class GitHandler:
         pass
 
     def return_to_head(self):
-        self.repo.head.reference = self.master
-        self.repo.head.reset(index=True, working_tree=True)
+        self._checkout_commit(self.master)
