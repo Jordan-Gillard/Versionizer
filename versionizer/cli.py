@@ -99,7 +99,6 @@ def main():
     args = parser.parse_args()
     validate_args(args)
     print_banner()
-    return
     git_handler: GitHandler = GitHandler(args.previous_commit, args.current_commit)
     git_handler.checkout_first_commit()
 
@@ -129,7 +128,7 @@ def main():
         test_file_lines = f.readlines()
 
     git_handler.return_to_head()
-    with open(test_file_path, "r") as f:
+    with open(test_file_path, "w") as f:
         f.writelines(test_file_lines)
 
     if args.run_tests:
