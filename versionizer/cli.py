@@ -83,11 +83,6 @@ def generate_tests(args):
     test_generator.generate_tests()
 
 
-def run_tests(args):
-    test_executor = AutomatedTestExecutor()
-    test_executor.run_tests()
-
-
 def validate_args(args):
     if not args.run_tests and not args.generate_tests:
         parser.error(
@@ -124,7 +119,7 @@ def main():
     # TODO: Make test saver class?
     test_file_name = "test_" + args.module
     test_file_path = os.path.join(args.project_path, test_file_name)
-    with open(test_file_path, "r") as f:
+    with open(test_file_path, "r+") as f:
         test_file_lines = f.readlines()
 
     git_handler.return_to_head()
