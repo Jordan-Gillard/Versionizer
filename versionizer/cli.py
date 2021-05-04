@@ -45,6 +45,7 @@ parser.add_argument(
 parser.add_argument(
     "-r",
     "--run-tests",
+    default=True,
     action='store_true',
     dest="run_tests",
 )
@@ -123,7 +124,6 @@ def main():
     # TODO: Make test saver class?
     test_file_name = "test_" + args.module
     test_file_path = os.path.join(args.project_path, test_file_name)
-    test_file_lines = []
     with open(test_file_path, "r") as f:
         test_file_lines = f.readlines()
 
@@ -133,8 +133,6 @@ def main():
 
     if args.run_tests:
         run_tests(args)
-
-
 
 
 if __name__ == "__main__":
