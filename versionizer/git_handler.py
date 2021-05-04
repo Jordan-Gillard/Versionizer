@@ -4,7 +4,7 @@ from git import Commit, Repo
 
 
 class GitHandler:
-    def __init__(self, file: str, first_commit: str,
+    def __init__(self, first_commit: str,
                  second_commit: Optional[str] = None):
         self.repo: Repo = Repo(search_parent_directories=True)
         self.master: Commit = self.repo.head.reference
@@ -13,7 +13,6 @@ class GitHandler:
             self.second_commit: Commit = self.repo.commit(second_commit)
         else:
             self.second_commit = self.master
-        self.file = file
 
     def _checkout_commit(self, commit: Commit):
         self.repo.head.reference = commit
@@ -28,3 +27,7 @@ class GitHandler:
 
     def return_to_head(self):
         self._checkout_commit(self.master)
+
+    def revert_file(self, file_name: str):
+        #TODO
+        pass
