@@ -84,7 +84,7 @@ def generate_tests(args):
 
 
 def run_tests(args):
-    test_executor = AutomatedTestExecutor(args)
+    test_executor = AutomatedTestExecutor()
     test_executor.run_tests()
 
 
@@ -132,7 +132,7 @@ def main():
         f.writelines(test_file_lines)
 
     if args.run_tests:
-        run_tests(args)
+        AutomatedTestExecutor.run_tests(test_file_path)
 
 
 if __name__ == "__main__":

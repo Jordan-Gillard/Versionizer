@@ -5,8 +5,6 @@ from utils import print_bright_blue
 
 
 class AutomatedTestExecutor:
-    def __init__(self, namespace: Namespace):
-        self.namespace = namespace
 
     # def _check_for_versions(self):
     #     if not self.namespace.previous_version and not self.namespace.new_version:
@@ -21,13 +19,9 @@ class AutomatedTestExecutor:
     #         os.system(f"pip install -q {library}")
 
     @staticmethod
-    def _run_tests_in_test_dir(test_dir, test_file=None):
-        if not test_file:
-            os.system(f"pytest --quiet --color=yes {test_dir}")
-        else:
-            path = os.path.join(test_dir, test_file)
-            print(f"pytest --quiet --color=yes {path}")
-            os.system(f"pytest --quiet --color=yes {path}")
+    def _run_tests_in_test_dir(test_location):
+        print(f"pytest --quiet --color=yes {test_location}")
+        os.system(f"pytest --quiet --color=yes {test_location}")
 
     # def _run_tests_for_version(self, version):
     #     print_bright_blue(
@@ -41,10 +35,10 @@ class AutomatedTestExecutor:
     #         f"Running tests with latest version of {self.namespace.library}")
     #     self._install_python_library(self.namespace.library)
     #     self._run_tests_in_test_dir(self.namespace.project_path)
-
-    def run_tests(self):
+    @staticmethod
+    def run_tests(test_location):
         print_bright_blue("Beginning test run.")
-        self._run_tests_in_test_dir(self.namespace.project_path, self.namespace.module)
+        AutomatedTestExecutor._run_tests_in_test_dir(test_location)
         # self._check_for_versions()
         # if self.namespace.previous_version:
         #     self._run_tests_for_version(self.namespace.previous_version)
