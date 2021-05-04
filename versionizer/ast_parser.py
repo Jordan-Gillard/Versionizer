@@ -6,7 +6,7 @@ import astor
 from versionizer.graph_node import GraphNode
 
 
-class SourceBuilder(ast.NodeTransformer):
+class ASTParser(ast.NodeTransformer):
     def __init__(self, original_file: str, new_file_name: str, nodes_to_keep: Set[GraphNode]):
         super().__init__()
         self.original_file: str = original_file
