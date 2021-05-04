@@ -26,6 +26,7 @@ class AutomatedTestExecutor:
             os.system(f"pytest --quiet --color=yes {test_dir}")
         else:
             path = os.path.join(test_dir, test_file)
+            print(f"pytest --quiet --color=yes {path}")
             os.system(f"pytest --quiet --color=yes {path}")
 
     # def _run_tests_for_version(self, version):
