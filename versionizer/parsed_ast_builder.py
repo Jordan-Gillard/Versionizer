@@ -3,7 +3,7 @@ import ast
 import astor
 from typing import Any, Set
 
-from versionizer.graph_node import GraphNode
+from graph_node import GraphNode
 
 
 class ParsedASTBuilder(ast.NodeTransformer):

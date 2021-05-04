@@ -3,8 +3,8 @@ from typing import Set
 
 import astor
 
-from versionizer.ast_handler import ASTHandler
-from versionizer.graph_node import GraphNode
+from ast_handler import ASTHandler
+from graph_node import GraphNode
 
 
 class ASTDiffer(ast.NodeTransformer):

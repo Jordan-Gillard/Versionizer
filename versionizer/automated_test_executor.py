@@ -1,7 +1,7 @@
 import os
 from argparse import Namespace
 
-from versionizer.utils import print_bright_blue
+from utils import print_bright_blue
 
 
 class AutomatedTestExecutor:

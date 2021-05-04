@@ -4,14 +4,14 @@ import os
 
 from typing import Set
 
-from versionizer.ast_differ import ASTDiffer
-from versionizer.ast_handler import ASTHandler
-from versionizer.automated_test_executor import AutomatedTestExecutor
-from versionizer.automated_test_generator import AutomatedTestGenerator
-from versionizer.git_handler import GitHandler
-from versionizer.graph_node import GraphNode
-from versionizer.parsed_ast_builder import ParsedASTBuilder
-from versionizer.utils import print_banner
+from ast_differ import ASTDiffer
+from ast_handler import ASTHandler
+from automated_test_executor import AutomatedTestExecutor
+from automated_test_generator import AutomatedTestGenerator
+from git_handler import GitHandler
+from graph_node import GraphNode
+from parsed_ast_builder import ParsedASTBuilder
+from utils import print_banner
 
 parser = argparse.ArgumentParser(
     description="Automatically generate test cases to ensure the correctness of migrate code.",
@@ -99,6 +99,7 @@ def main():
     args = parser.parse_args()
     validate_args(args)
     print_banner()
+    return
     git_handler: GitHandler = GitHandler(args.previous_commit, args.current_commit)
     git_handler.checkout_first_commit()
 
