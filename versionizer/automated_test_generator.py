@@ -7,7 +7,12 @@ from utils import print_bright_blue
 
 
 class AutomatedTestGenerator:
+    """
+    This class has functions to generate tests for a given file (aka module) or
+    directory.
+    """
     def __init__(self, namespace: Namespace):
+        # TODO: Replace namespace with specific arguments. Namespace is confusing
         self.namespace = namespace
 
     @staticmethod

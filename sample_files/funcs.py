@@ -1,13 +1,14 @@
-def assign_numbers():
+from sample_files.other import qux
+
+
+def foo():
     x = 1
-    y = 2 + 3
-    z = x + y
-    return z + 1
+    return bar(x)
 
 
-def func_with_params(a, b, c):
-    pass
+def bar(a):
+    return a + baz()
 
 
-def same_func(a):
-    return 1
+def baz():
+    return 5 + qux()

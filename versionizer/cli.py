@@ -8,25 +8,27 @@ from ast_handler import ASTHandler
 from automated_test_executor import AutomatedTestExecutor
 from automated_test_generator import AutomatedTestGenerator
 from git_handler import GitHandler
-from graph_node import GraphNode
+from function_node import FunctionNode
 from parsed_ast_builder import ParsedASTBuilder
 from utils import print_banner
 
 parser = argparse.ArgumentParser(
-    description="Automatically generate test cases to ensure the correctness of migrate code.",
-)
-
-parser.add_argument(
-    "-m",
-    "--module",
-    help="The python file to generate tests for.",
-    required=True
+    description="Automatically generate test cases to ensure the correctness of migrated code.",
 )
 
 parser.add_argument(
     "--project-path",
     help="The directory to generate tests for.",
     required=True
+)
+
+
+parser.add_argument(
+    "-m",
+    "--module",
+    help="The python file to generate tests for. If empty, Versionizer will generate "
+         "tests for all files in the module.",
+    required=False
 )
 
 parser.add_argument(
@@ -98,6 +100,7 @@ def main():
     args = parser.parse_args()
     validate_args(args)
     print_banner()
+
     git_handler: GitHandler = GitHandler(args.previous_commit, args.current_commit)
     git_handler.checkout_first_commit()
 
@@ -107,7 +110,7 @@ def main():
     git_handler.checkout_second_commit()
     ast_handler_2 = ASTHandler(file_path_to_test)
     ast_differ = ASTDiffer(ast_handler_1, ast_handler_2)
-    different_nodes: Set[GraphNode] = ast_differ.get_changed_function_nodes()
+    different_nodes: Set[FunctionNode] = ast_differ.get_changed_function_nodes()
 
     git_handler.checkout_first_commit()
     parsed_ast_builder: ParsedASTBuilder = ParsedASTBuilder(file_path_to_test,
