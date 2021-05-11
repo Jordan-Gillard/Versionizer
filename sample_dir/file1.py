@@ -1,2 +1,2 @@
 def foo():
-    return 9
+    return 1
