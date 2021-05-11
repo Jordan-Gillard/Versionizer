@@ -10,7 +10,6 @@ import pytest
 
 from tests.shared_functions import generate_temp_file_with_content
 from versionizer.automated_test_generator import AutomatedTestGenerator
-from versionizer.utils import print_bright_blue
 
 
 @pytest.fixture
@@ -47,20 +46,18 @@ def test_get_test_files_in_dir(atg):
 
 
 def test_generate_tests_with_file(atg):
-    # Dont capture STDOUT
+    # Capture STDOUT from Pynguin so it doesn't clog up test results
     with redirect_stdout(io.StringIO()):
-        func = "def foo():\n    return 1\n"
         # TODO: PyTest comes with built in temporary directory fixtures. Use those.
         with tempfile.TemporaryDirectory() as temp_dir:
+            func = "def foo():\n    return 1\n"
             for temp_file_full_path in generate_temp_file_with_content(func):
                 namespace = Namespace()
-                project_path = str(pathlib.Path(temp_file_full_path).parent) + os.path.sep
+                project_path = str(pathlib.Path(temp_file_full_path).parent) + \
+                               os.path.sep
                 namespace.project_path = project_path
-                print_bright_blue(f"Project Path: {project_path}")
-                print_bright_blue(f"Output Path: {temp_dir}")
                 namespace.output_path = temp_dir
                 _, filename = ntpath.split(temp_file_full_path)
-                print_bright_blue(f"Filename: {filename}")
                 namespace.module = filename
                 namespace.algorithm = "WHOLE_SUITE"
                 atg.namespace = namespace
@@ -69,9 +66,30 @@ def test_generate_tests_with_file(atg):
                 assert len(files_after) == 2
 
 
-def test_generate_tests_with_dir():
-    pass
+def test_generate_tests_with_dir(atg):
+    """Tests That Pynguin generates tests for all Python files in a directory."""
+    # Capture STDOUT from Pynguin so it doesn't clog up test results
+    with redirect_stdout(io.StringIO()):
+        # TODO: PyTest comes with built in temporary directory fixtures. Use those.
+        with tempfile.TemporaryDirectory() as temp_dir:
+            func1 = "def foo():\n    return 1\n"
+            for filepath1 in generate_temp_file_with_content(func1):
+                func2 = "def foo():\n    return 1\n"
+                for filepath2 in generate_temp_file_with_content(func2):
+                    namespace = Namespace()
+                    project_path = str(pathlib.Path(filepath2).parent) + \
+                                   os.path.sep
+                    namespace.project_path = project_path
+                    namespace.output_path = temp_dir
+                    namespace.module = ""
+                    namespace.algorithm = "WHOLE_SUITE"
+                    atg.namespace = namespace
+                    atg.generate_tests()
+                    files_after = os.listdir(temp_dir)
+                    assert len(files_after) == 4
 
 
 def test_generate_tests_with_dir_recursively():
+    """Tests That Pynguin generates tests for all Python files in a directory,
+    and all files in subdirectories as well."""
     pass
