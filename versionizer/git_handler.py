@@ -21,7 +21,6 @@ class GitHandler:
         #  the head.
         self.repo.head.reference = commit
         self.revert_all_changes()
-        print(f"Switched to commit: {self.repo.head.commit.name_rev}")
 
     def checkout_first_commit(self):
         self._checkout_commit(self.first_commit)

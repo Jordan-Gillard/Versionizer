@@ -148,13 +148,14 @@ def main():
                     if file.endswith(".py") and "test" not in file:
                         run_for_file(args.project_path, file, git_handler, args)
 
-        if args.run_tests:
-            AutomatedTestExecutor.run_tests(args.project_path)
     except Exception as e:
         logging.error(e)
     finally:
         git_handler.return_to_head()
         git_handler.pop_stash_if_needed()
+
+    if args.run_tests:
+        AutomatedTestExecutor.run_tests(args.project_path)
 
 
 if __name__ == "__main__":

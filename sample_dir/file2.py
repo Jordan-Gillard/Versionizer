@@ -1,4 +1,4 @@
-from sample_dir.file1 import foo
+from file1 import foo
 
 
 def bar():
@@ -6,4 +6,4 @@ def bar():
 
 
 def baz():
-    return foo() + 2
+    return foo() + 7
