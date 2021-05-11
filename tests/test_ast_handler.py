@@ -24,4 +24,5 @@ def test_ast_handler_get_functions_dependents(file_with_indirect_function_depend
     dependents = handler.get_function_dependents()
     assert dependents['bar'] == {'foo'}
     assert dependents['baz'] == {'bar'}
+    assert len(dependents) == 2
     assert 'foo' not in dependents.keys()  # No function calls foo

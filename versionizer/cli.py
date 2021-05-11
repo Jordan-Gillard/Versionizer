@@ -19,7 +19,9 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument(
     "--project-path",
-    help="The directory to generate tests for.",
+    help="The directory which contains the python module. If the module argument is not"
+         " specified, Versionizer will generate tests for all non-test Python files in"
+         " this directory.",
     required=True
 )
 
@@ -99,6 +101,8 @@ def validate_args(args):
 
 def main():
     args = parser.parse_args()
+    args.output_path = args.project_path
+
     validate_args(args)
     print_banner()
 

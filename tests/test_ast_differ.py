@@ -9,14 +9,14 @@ from versionizer.ast_handler import ASTHandler
 
 @pytest.fixture
 def temp_file1():
-    func = """def foo():\n    return 1"""
+    func = "def foo():\n    return 1"
     for filename in generate_temp_file_with_content(func):
         yield filename
 
 
 @pytest.fixture
 def temp_file2():
-    func = """def foo():\n    return 2"""
+    func = "def foo():\n    return 2"
     for filename in generate_temp_file_with_content(func):
         yield filename
 
