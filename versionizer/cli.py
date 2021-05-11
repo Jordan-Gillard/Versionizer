@@ -102,40 +102,45 @@ def validate_args(args):
 def main():
     args = parser.parse_args()
     args.output_path = args.project_path
-
-    validate_args(args)
     print_banner()
+    validate_args(args)
 
     git_handler: GitHandler = GitHandler(args.previous_commit, args.current_commit)
     git_handler.checkout_first_commit()
+    # Handle working with a single file
+    if args.module:
 
-    file_path_to_test = os.path.join(args.project_path, args.module)
+        file_path_to_test = os.path.join(args.project_path, args.module)
 
-    ast_handler_1 = ASTHandler(file_path_to_test)
-    git_handler.checkout_second_commit()
-    ast_handler_2 = ASTHandler(file_path_to_test)
-    ast_differ = ASTDiffer(ast_handler_1, ast_handler_2)
-    different_nodes: Set[FunctionNode] = ast_differ.get_changed_function_nodes()
+        ast_handler_1 = ASTHandler(file_path_to_test)
+        git_handler.checkout_second_commit()
+        ast_handler_2 = ASTHandler(file_path_to_test)
+        ast_differ = ASTDiffer(ast_handler_1, ast_handler_2)
+        different_nodes: Set[FunctionNode] = ast_differ.get_changed_function_nodes()
 
-    git_handler.checkout_first_commit()
-    parsed_ast_builder: ParsedASTBuilder = ParsedASTBuilder(file_path_to_test,
-                                                            different_nodes)
-    parsed_ast_builder.build_source()
+        git_handler.checkout_first_commit()
+        parsed_ast_builder: ParsedASTBuilder = ParsedASTBuilder(file_path_to_test,
+                                                                different_nodes)
+        parsed_ast_builder.build_source()
 
-    if args.generate_tests:
-        generate_tests(args)
+        if args.generate_tests:
+            generate_tests(args)
 
-    test_file_name = "test_" + args.module
-    test_file_path = os.path.join(args.project_path, test_file_name)
-    with open(test_file_path, "r+") as f:
-        test_file_lines = f.readlines()
+        test_file_name = "test_" + args.module
+        test_file_path = os.path.join(args.project_path, test_file_name)
+        with open(test_file_path, "r+") as f:
+            test_file_lines = f.readlines()
 
-    git_handler.return_to_head()
-    with open(test_file_path, "w") as f:
-        f.writelines(test_file_lines)
+        git_handler.return_to_head()
+        with open(test_file_path, "w") as f:
+            f.writelines(test_file_lines)
 
-    if args.run_tests:
-        AutomatedTestExecutor.run_tests(test_file_path)
+        if args.run_tests:
+            AutomatedTestExecutor.run_tests(test_file_path)
+
+    # Handle working with an entire module
+    else:
+        pass
 
 
 if __name__ == "__main__":
