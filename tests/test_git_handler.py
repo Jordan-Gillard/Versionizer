@@ -29,9 +29,15 @@ def git_handler():
     git_handler.return_to_head()
 
 
-def test_dummy_file_is_destroyed_when_going_to_previous_commit(git_handler, dummy_file):
-    assert not os.path.exists(dummy_file)
-
+def test_dummy_file_is_destroyed_when_going_to_previous_commit():
+    dummy_file_name = str(uuid4())
+    f = open(dummy_file_name, 'w')
+    f.close()
+    git_handler = GitHandler('HEAD~3')
+    git_handler.checkout_first_commit()
+    exists = os.path.exists(dummy_file)
+    git_handler.return_to_head()
+    assert not exists
 
 
 def test_git_handler_doesnt_delete_non_committed_changes_when_returning(dummy_file):
