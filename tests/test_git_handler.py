@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 from uuid import uuid4
 
 import pytest
@@ -18,6 +17,7 @@ def dummy_file_name():
     yield dummy_file_name
     if os.path.exists(dummy_file_name):
         os.remove(dummy_file_name)
+    repo.index.remove(path_to_dummy_file)
 
 
 def test_dummy_file_is_destroyed_when_going_to_previous_commit(dummy_file_name):

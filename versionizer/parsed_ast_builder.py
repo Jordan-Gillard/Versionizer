@@ -22,6 +22,7 @@ class ParsedASTBuilder(ast.NodeTransformer):
         original_ast = astor.parse_file(self.file_name)
         pruned_ast = self.visit(original_ast)
         # TODO: Need to figure out how to rebuild an entire module for testing
+        #  Maybe we should just run the tool one time for each file?
         with open(self.file_name, "w") as f:
             f.write(astor.to_source(pruned_ast))
         print(f"Wrote new source file to {self.file_name}")

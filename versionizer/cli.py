@@ -138,7 +138,7 @@ def main():
         if args.run_tests:
             AutomatedTestExecutor.run_tests(test_file_path)
 
-    # Handle working with an entire module
+    # Handle working with an entire directory
     else:
         pass
 
