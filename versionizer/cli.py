@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import logging
 import os
 from typing import Set
 
@@ -135,18 +136,25 @@ def main():
     validate_args(args)
 
     git_handler: GitHandler = GitHandler(args.previous_commit, args.current_commit)
-    # Handle working with a single file
-    if args.module:
-        run_for_file(args.project_path, args.module, git_handler, args)
-    # Handle working with an entire directory
-    else:
-        for dirpath, dirnames, filenames in os.walk(args.progect_path):
-            for file in filenames:
-                if file.endswith(".py") and "test" not in file:
-                    run_for_file(args.project_path, file, git_handler, args)
+    git_handler.stash_changes_if_necessary()
+    try:
+        # Handle working with a single file
+        if args.module:
+            run_for_file(args.project_path, args.module, git_handler, args)
+        # Handle working with an entire directory
+        else:
+            for dirpath, dirnames, filenames in os.walk(args.project_path):
+                for file in filenames:
+                    if file.endswith(".py") and "test" not in file:
+                        run_for_file(args.project_path, file, git_handler, args)
 
-    if args.run_tests:
-        AutomatedTestExecutor.run_tests(args.project_path)
+        if args.run_tests:
+            AutomatedTestExecutor.run_tests(args.project_path)
+    except Exception as e:
+        logging.error(e)
+    finally:
+        git_handler.return_to_head()
+        git_handler.pop_stash_if_needed()
 
 
 if __name__ == "__main__":

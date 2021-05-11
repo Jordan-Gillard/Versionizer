@@ -19,11 +19,8 @@ class GitHandler:
         # TODO: If there are unsaved changes in the current working tree, we should
         #  stash these changes and then get them back when we eventually return to
         #  the head.
-        if self.repo.is_dirty():
-            self.was_dirty = True
-            self.repo.git.stash("save")
         self.repo.head.reference = commit
-        self.repo.head.reset(index=True, working_tree=True)
+        self.revert_all_changes()
         print(f"Switched to commit: {self.repo.head.commit.name_rev}")
 
     def checkout_first_commit(self):
@@ -34,5 +31,15 @@ class GitHandler:
 
     def return_to_head(self):
         self._checkout_commit(self.master)
+
+    def stash_changes_if_necessary(self):
+        if self.repo.is_dirty():
+            self.was_dirty = True
+            self.repo.git.stash("save")
+
+    def pop_stash_if_needed(self):
         if self.was_dirty:
             self.repo.git.stash("pop")
+
+    def revert_all_changes(self):
+        self.repo.head.reset(index=True, working_tree=True)
