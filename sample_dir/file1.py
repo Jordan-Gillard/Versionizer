@@ -1,1 +1,2 @@
-print("file 1!")
+def foo():
+    return 1
