@@ -99,6 +99,33 @@ def validate_args(args):
         parser.error("Must specify a previous commit to generate tests for.")
 
 
+def run_for_file(project_path, file, git_handler, args):
+    file_path_to_test = os.path.join(project_path, file)
+
+    ast_handler_1 = ASTHandler(file_path_to_test)
+    git_handler.checkout_second_commit()
+    ast_handler_2 = ASTHandler(file_path_to_test)
+    ast_differ = ASTDiffer(ast_handler_1, ast_handler_2)
+    different_nodes: Set[FunctionNode] = ast_differ.get_changed_function_nodes()
+
+    git_handler.checkout_first_commit()
+    parsed_ast_builder: ParsedASTBuilder = ParsedASTBuilder(file_path_to_test,
+                                                            different_nodes)
+    parsed_ast_builder.build_source()
+
+    if args.generate_tests:
+        generate_tests(args)
+
+    test_file_name = "test_" + file
+    test_file_path = os.path.join(project_path, test_file_name)
+    with open(test_file_path, "r+") as f:
+        test_file_lines = f.readlines()
+
+    git_handler.return_to_head()
+    with open(test_file_path, "w") as f:
+        f.writelines(test_file_lines)
+
+
 def main():
     args = parser.parse_args()
     args.output_path = args.project_path
@@ -109,38 +136,16 @@ def main():
     git_handler.checkout_first_commit()
     # Handle working with a single file
     if args.module:
-
-        file_path_to_test = os.path.join(args.project_path, args.module)
-
-        ast_handler_1 = ASTHandler(file_path_to_test)
-        git_handler.checkout_second_commit()
-        ast_handler_2 = ASTHandler(file_path_to_test)
-        ast_differ = ASTDiffer(ast_handler_1, ast_handler_2)
-        different_nodes: Set[FunctionNode] = ast_differ.get_changed_function_nodes()
-
-        git_handler.checkout_first_commit()
-        parsed_ast_builder: ParsedASTBuilder = ParsedASTBuilder(file_path_to_test,
-                                                                different_nodes)
-        parsed_ast_builder.build_source()
-
-        if args.generate_tests:
-            generate_tests(args)
-
-        test_file_name = "test_" + args.module
-        test_file_path = os.path.join(args.project_path, test_file_name)
-        with open(test_file_path, "r+") as f:
-            test_file_lines = f.readlines()
-
-        git_handler.return_to_head()
-        with open(test_file_path, "w") as f:
-            f.writelines(test_file_lines)
-
-        if args.run_tests:
-            AutomatedTestExecutor.run_tests(test_file_path)
-
+        run_for_file(args.project_path, args.module, git_handler, args)
     # Handle working with an entire directory
     else:
-        pass
+        for dirpath, dirnames, filenames in os.walk(args.progect_path):
+            for file in filenames:
+                if file.endswith(".py") and "test" not in file:
+                    run_for_file(args.project_path, file, git_handler, args)
+
+    if args.run_tests:
+        AutomatedTestExecutor.run_tests(args.project_path)
 
 
 if __name__ == "__main__":
