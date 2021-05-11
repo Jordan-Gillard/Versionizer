@@ -35,4 +35,4 @@ class GitHandler:
     def return_to_head(self):
         self._checkout_commit(self.master)
         if self.was_dirty:
-            print("Was dirty. Please use stash pop")
+            self.repo.git.stash("pop")
