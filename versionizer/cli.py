@@ -3,14 +3,14 @@ import argparse
 import os
 from typing import Set
 
-from ast_differ import ASTDiffer
-from ast_handler import ASTHandler
-from automated_test_executor import AutomatedTestExecutor
-from automated_test_generator import AutomatedTestGenerator
-from function_node import FunctionNode
-from git_handler import GitHandler
-from parsed_ast_builder import ParsedASTBuilder
-from utils import print_banner
+from versionizer.ast_differ import ASTDiffer
+from versionizer.ast_handler import ASTHandler
+from versionizer.automated_test_executor import AutomatedTestExecutor
+from versionizer.automated_test_generator import AutomatedTestGenerator
+from versionizer.function_node import FunctionNode
+from versionizer.git_handler import GitHandler
+from versionizer.parsed_ast_builder import ParsedASTBuilder
+from versionizer.utils import print_banner
 
 parser = argparse.ArgumentParser(
     description="Automatically generate test cases to ensure the correctness of "

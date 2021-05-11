@@ -1,6 +1,6 @@
 import os
 
-from utils import print_bright_blue
+from versionizer.utils import print_bright_blue
 
 
 class AutomatedTestExecutor:

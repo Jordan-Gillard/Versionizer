@@ -3,7 +3,7 @@ from argparse import Namespace
 
 import pynguin
 
-from utils import print_bright_blue
+from versionizer.utils import print_bright_blue
 
 
 class AutomatedTestGenerator:

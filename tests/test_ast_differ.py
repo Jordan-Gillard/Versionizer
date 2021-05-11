@@ -1,18 +1,10 @@
 import os
-import tempfile
 
 import pytest
 
+from tests.shared_functions import generate_temp_file_with_content
 from versionizer.ast_differ import ASTDiffer
 from versionizer.ast_handler import ASTHandler
-
-
-def generate_temp_file_with_content(content):
-    tmp = tempfile.NamedTemporaryFile()
-    tmp.write(str.encode(content))
-    tmp.seek(0)
-    yield tmp.name
-    tmp.close()
 
 
 @pytest.fixture
@@ -45,4 +37,7 @@ def test_get_changed_function_nodes_returns_node_that_was_changed(temp_file1,
     handler1 = ASTHandler(temp_file1)
     handler2 = ASTHandler(temp_file2)
     differ = ASTDiffer(handler1, handler2)
-    assert len(differ.get_changed_function_nodes()) == 1
+    diff_nodes = differ.get_changed_function_nodes()
+    assert len(diff_nodes) == 1
+    different_node = diff_nodes.pop()
+    assert different_node.name == "foo"
