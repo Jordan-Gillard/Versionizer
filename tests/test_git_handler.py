@@ -15,9 +15,28 @@ def dummy_file():
     os.remove(dummy_file_name)
 
 
+@pytest.fixture
+def git_handler():
+    """
+    By using this fixture and yielding the GitHander, we are guaranteed to return
+    to the commit we were on even if tests fail. When tests fail, the code after the
+    yield block is guaranteed to run. This keeps us from getting the user stuck on
+    a previous commit.
+    """
+    git_handler = GitHandler('HEAD~3')
+    git_handler.checkout_first_commit()
+    yield git_handler
+    git_handler.return_to_head()
+
+
+def test_dummy_file_is_destroyed_when_going_to_previous_commit(git_handler, dummy_file):
+    assert not os.path.exists(dummy_file)
+
+
+
 def test_git_handler_doesnt_delete_non_committed_changes_when_returning(dummy_file):
     # Return to a known previous commit
-    git_handler = GitHandler('HEAD~1')
+    git_handler = GitHandler('HEAD~5')
     git_handler.checkout_first_commit()
     # Come back and assert that those dummy file is still there
     git_handler.return_to_head()
