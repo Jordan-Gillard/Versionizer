@@ -1,20 +1,20 @@
-import ast
 from typing import Set
 
 import astor
 
-from ast_handler import ASTHandler
-from function_node import FunctionNode
+from versionizer.ast_handler import ASTHandler
+from versionizer.function_node import FunctionNode
 
 
-class ASTDiffer(ast.NodeTransformer):
+class ASTDiffer:
 
     def __init__(self, ast_handler_1: ASTHandler, ast_handler_2: ASTHandler):
         super().__init__()
         self.ast_handler_1: ASTHandler = ast_handler_1
         self.ast_handler_2: ASTHandler = ast_handler_2
 
-    def _functions_have_not_changed(self, node1: FunctionNode, node2: FunctionNode):
+    @staticmethod
+    def _functions_have_not_changed(node1: FunctionNode, node2: FunctionNode):
         return astor.dump_tree(node1.body) == astor.dump_tree(node2.body)
 
     def get_changed_function_nodes(self) -> Set[FunctionNode]:

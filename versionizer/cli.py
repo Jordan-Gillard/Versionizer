@@ -7,13 +7,14 @@ from ast_differ import ASTDiffer
 from ast_handler import ASTHandler
 from automated_test_executor import AutomatedTestExecutor
 from automated_test_generator import AutomatedTestGenerator
-from git_handler import GitHandler
 from function_node import FunctionNode
+from git_handler import GitHandler
 from parsed_ast_builder import ParsedASTBuilder
 from utils import print_banner
 
 parser = argparse.ArgumentParser(
-    description="Automatically generate test cases to ensure the correctness of migrated code.",
+    description="Automatically generate test cases to ensure the correctness of "
+                "changed code.",
 )
 
 parser.add_argument(
@@ -21,7 +22,6 @@ parser.add_argument(
     help="The directory to generate tests for.",
     required=True
 )
-
 
 parser.add_argument(
     "-m",
@@ -78,7 +78,8 @@ parser.add_argument(
 parser.add_argument(
     "--algorithm",
     default="WHOLE_SUITE",
-    help="Specify which algorithm to use for test generation. Defaults to whole suite tests, similar to EvoSuite.",
+    help="Specify which algorithm to use for test generation. Defaults to whole suite "
+         "tests, similar to EvoSuite.",
     choices=["RANDOM", "MOSA", "RANDOM_SEARCH", "WHOLE_SUITE"],
 )
 

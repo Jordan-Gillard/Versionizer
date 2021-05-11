@@ -28,7 +28,7 @@ class ASTHandler(ast.NodeTransformer):
         self.nodes[func_node] = func_node
 
     def visit_Call(self, node: ast.Call) -> Any:
-        self.node_dependents[self.curr_func].add(node.func.id)
+        self.node_dependents[node.func.id].add(self.curr_func)
         self.generic_visit(node)
 
     def get_all_function_nodes(self) -> Dict[FunctionNode, FunctionNode]:
