@@ -1,7 +1,9 @@
 import os
+from pathlib import Path
 from uuid import uuid4
 
 import pytest
+from git import Repo
 
 from versionizer.git_handler import GitHandler
 
@@ -33,6 +35,9 @@ def test_dummy_file_is_destroyed_when_going_to_previous_commit():
     dummy_file_name = str(uuid4())
     f = open(dummy_file_name, 'w')
     f.close()
+    git_dir_path = Path(__file__).parent.parent  # Clean this up later, it's ugly
+    repo = Repo(Path)
+    repo.index.add(dummy_file_name)
     git_handler = GitHandler('HEAD~3')
     git_handler.checkout_first_commit()
     exists = os.path.exists(dummy_file_name)
