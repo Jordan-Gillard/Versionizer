@@ -100,6 +100,7 @@ def validate_args(args):
 
 
 def run_for_file(project_path, file, git_handler, args):
+    git_handler.checkout_first_commit()
     file_path_to_test = os.path.join(project_path, file)
 
     ast_handler_1 = ASTHandler(file_path_to_test)
@@ -133,7 +134,6 @@ def main():
     validate_args(args)
 
     git_handler: GitHandler = GitHandler(args.previous_commit, args.current_commit)
-    git_handler.checkout_first_commit()
     # Handle working with a single file
     if args.module:
         run_for_file(args.project_path, args.module, git_handler, args)

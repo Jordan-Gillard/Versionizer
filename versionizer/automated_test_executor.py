@@ -4,6 +4,7 @@ from versionizer.utils import print_bright_blue
 
 
 class AutomatedTestExecutor:
+    # TODO: This can probably just be a function
     """
     This class runs all tests in a given location. This location can be a directory,
     in which case it will run all test files within, or a file.
