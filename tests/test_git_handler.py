@@ -35,7 +35,7 @@ def test_dummy_file_is_destroyed_when_going_to_previous_commit():
     f.close()
     git_handler = GitHandler('HEAD~3')
     git_handler.checkout_first_commit()
-    exists = os.path.exists(dummy_file)
+    exists = os.path.exists(dummy_file_name)
     git_handler.return_to_head()
     assert not exists
 
