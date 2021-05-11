@@ -111,7 +111,8 @@ def run_for_file(project_path, file, git_handler, args):
 
     git_handler.checkout_first_commit()
     parsed_ast_builder: ParsedASTBuilder = ParsedASTBuilder(file_path_to_test,
-                                                            different_nodes)
+                                                            different_nodes,
+                                                            ast_handler_1.get_function_dependents())
     parsed_ast_builder.build_source()
 
     if args.generate_tests:
