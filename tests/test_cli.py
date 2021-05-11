@@ -1,3 +1,6 @@
+import io
+from contextlib import redirect_stderr
+
 import pytest
 
 from versionizer.cli import parser
@@ -43,5 +46,7 @@ def test_parser_generate_tests_and_dont_run_tests(default_args):
 
 def test_parser_throws_error_with_bad_algorithm(default_args):
     default_args.extend(["--algorithm", "FAKE_ALGORITHM"])
-    with pytest.raises(SystemExit):
-        parser.parse_args(default_args)
+    # We don't want the error showing up in the test results
+    with redirect_stderr(io.StringIO()):
+        with pytest.raises(SystemExit):
+            parser.parse_args(default_args)
