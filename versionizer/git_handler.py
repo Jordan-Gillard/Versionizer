@@ -13,11 +13,15 @@ class GitHandler:
             self.second_commit: Commit = self.repo.commit(second_commit)
         else:
             self.second_commit = self.master
+        self.was_dirty = False
 
     def _checkout_commit(self, commit: Commit):
         # TODO: If there are unsaved changes in the current working tree, we should
         #  stash these changes and then get them back when we eventually return to
         #  the head.
+        if self.repo.is_dirty():
+            self.was_dirty = True
+            self.repo.git.stash("save")
         self.repo.head.reference = commit
         self.repo.head.reset(index=True, working_tree=True)
         print(f"Switched to commit: {self.repo.head.commit.name_rev}")
@@ -30,3 +34,5 @@ class GitHandler:
 
     def return_to_head(self):
         self._checkout_commit(self.master)
+        if self.was_dirty:
+            print("Was dirty. Please use stash pop")

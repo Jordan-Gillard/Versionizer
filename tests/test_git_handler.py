@@ -10,11 +10,9 @@ from versionizer.git_handler import GitHandler
 
 @pytest.fixture
 def dummy_file_name():
-    git_dir_path = Path(__file__).parent.parent  # Clean this up later, it's ugly
-    repo = Repo(git_dir_path)
+    repo = Repo(search_parent_directories=True)
     dummy_file_name = str(uuid4())
-    f = open(dummy_file_name, 'w')
-    f.close()
+    open(dummy_file_name, 'w').close()
     path_to_dummy_file = os.path.abspath(dummy_file_name)
     repo.index.add(path_to_dummy_file)
     yield dummy_file_name
