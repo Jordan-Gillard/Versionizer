@@ -18,7 +18,8 @@ def dummy_file_name():
     path_to_dummy_file = os.path.abspath(dummy_file_name)
     repo.index.add(path_to_dummy_file)
     yield dummy_file_name
-    os.remove(dummy_file_name)
+    if os.path.exists(dummy_file_name):
+        os.remove(dummy_file_name)
 
 
 def test_dummy_file_is_destroyed_when_going_to_previous_commit(dummy_file_name):
