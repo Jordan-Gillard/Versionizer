@@ -6,4 +6,4 @@ def bar():
 
 
 def baz():
-    return foo() + 7
+    return foo() + 8
