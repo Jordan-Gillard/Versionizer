@@ -36,7 +36,7 @@ def test_dummy_file_is_destroyed_when_going_to_previous_commit():
     f = open(dummy_file_name, 'w')
     f.close()
     git_dir_path = Path(__file__).parent.parent  # Clean this up later, it's ugly
-    repo = Repo(Path)
+    repo = Repo(git_dir_path)
     repo.index.add(dummy_file_name)
     git_handler = GitHandler('HEAD~3')
     git_handler.checkout_first_commit()
