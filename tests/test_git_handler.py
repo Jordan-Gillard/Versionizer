@@ -32,11 +32,12 @@ def git_handler():
 
 
 def test_dummy_file_is_destroyed_when_going_to_previous_commit():
+    git_dir_path = Path(__file__).parent.parent  # Clean this up later, it's ugly
+    repo = Repo(git_dir_path)
     dummy_file_name = str(uuid4())
     f = open(dummy_file_name, 'w')
     f.close()
-    git_dir_path = Path(__file__).parent.parent  # Clean this up later, it's ugly
-    repo = Repo(git_dir_path)
+    assert os.path.exists(dummy_file_name)
     repo.index.add(dummy_file_name)
     git_handler = GitHandler('HEAD~3')
     git_handler.checkout_first_commit()
