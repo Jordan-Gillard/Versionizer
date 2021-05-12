@@ -3,7 +3,6 @@ import ntpath
 import os
 import pathlib
 import tempfile
-from argparse import Namespace
 from contextlib import redirect_stdout
 
 import pytest
@@ -14,7 +13,7 @@ from versionizer.automated_test_generator import AutomatedTestGenerator
 
 @pytest.fixture
 def atg():
-    return AutomatedTestGenerator(Namespace())
+    return AutomatedTestGenerator("")
 
 
 def test_clean_filename(atg):
@@ -52,15 +51,12 @@ def test_generate_tests_with_file(atg):
         with tempfile.TemporaryDirectory() as temp_dir:
             func = "def foo():\n    return 1\n"
             for temp_file_full_path in generate_temp_file_with_content(func):
-                namespace = Namespace()
                 project_path = str(pathlib.Path(temp_file_full_path).parent) + \
                                os.path.sep
-                namespace.project_path = project_path
-                namespace.output_path = temp_dir
+                atg.project_path = project_path
+                atg.output_path = temp_dir
                 _, filename = ntpath.split(temp_file_full_path)
-                namespace.module = filename
-                namespace.algorithm = "WHOLE_SUITE"
-                atg.namespace = namespace
+                atg.module = filename
                 atg.generate_tests()
                 files_after = os.listdir(temp_dir)
                 assert len(files_after) == 2
@@ -76,14 +72,11 @@ def test_generate_tests_with_dir(atg):
             for filepath1 in generate_temp_file_with_content(func1):
                 func2 = "def foo():\n    return 1\n"
                 for filepath2 in generate_temp_file_with_content(func2):
-                    namespace = Namespace()
                     project_path = str(pathlib.Path(filepath2).parent) + \
                                    os.path.sep
-                    namespace.project_path = project_path
-                    namespace.output_path = temp_dir
-                    namespace.module = ""
-                    namespace.algorithm = "WHOLE_SUITE"
-                    atg.namespace = namespace
+                    atg.project_path = project_path
+                    atg.output_path = temp_dir
+                    atg.module = ""
                     atg.generate_tests()
                     files_after = os.listdir(temp_dir)
                     assert len(files_after) == 4
