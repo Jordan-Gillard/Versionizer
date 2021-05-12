@@ -25,4 +25,7 @@ class ParsedASTBuilder(ast.NodeTransformer):
         #  Maybe we should just run the tool one time for each file?
         with open(self.file_name, "w") as f:
             f.write(astor.to_source(pruned_ast))
+
+        print("PRUNED AST SOURCE CODE")
+        print(astor.to_source(pruned_ast))
         print(f"Wrote new source file to {self.file_name}")

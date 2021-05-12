@@ -17,6 +17,8 @@ class AutomatedTestGenerator:
                  module=""):
         self.project_path = project_path
         self.output_path = output_path
+        if not output_path:
+            self.output_path = project_path
         self.algorithm = algorithm
         self.module = module
 
