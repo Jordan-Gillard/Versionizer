@@ -26,6 +26,16 @@ parser.add_argument(
     required=True
 )
 
+
+parser.add_argument(
+    "--git-repo",
+    help="The location of the Git repository for the project under test. If not "
+         "provided, Versionizer will default to it's own repository and assume you're"
+         "testing it on itself or sample directories.",
+    required=False,
+)
+
+
 parser.add_argument(
     "-m",
     "--module",

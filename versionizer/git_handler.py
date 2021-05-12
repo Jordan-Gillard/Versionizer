@@ -5,8 +5,12 @@ from git import Commit, Repo
 
 class GitHandler:
     def __init__(self, first_commit: str,
-                 second_commit: Optional[str] = None):
-        self.repo: Repo = Repo(search_parent_directories=True)
+                 second_commit: Optional[str] = None,
+                 git_repo: Optional[str] = None):
+        if git_repo:
+            self.repo: Repo = Repo(git_repo)
+        else:
+            self.repo: Repo = Repo(search_parent_directories=True)
         self.master: Commit = self.repo.head.reference
         self.first_commit: Commit = self.repo.commit(first_commit)
         if second_commit:
