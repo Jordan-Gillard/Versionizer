@@ -145,7 +145,8 @@ def main():
         else:
             for dirpath, dirnames, filenames in os.walk(args.project_path):
                 for file in filenames:
-                    if file.endswith(".py") and "test" not in file and "init" not in file:
+                    if file.endswith(
+                            ".py") and "test" not in file and "init" not in file:
                         run_for_file(args.project_path, file, git_handler, args)
 
     except Exception as e:
