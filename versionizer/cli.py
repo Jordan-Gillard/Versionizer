@@ -1,32 +1,37 @@
 #!/usr/bin/env python3
 import argparse
+import logging
 import os
 from typing import Set
 
-from ast_differ import ASTDiffer
-from ast_handler import ASTHandler
-from automated_test_executor import AutomatedTestExecutor
-from automated_test_generator import AutomatedTestGenerator
-from git_handler import GitHandler
-from graph_node import GraphNode
-from parsed_ast_builder import ParsedASTBuilder
-from utils import print_banner
+from versionizer.ast_differ import ASTDiffer
+from versionizer.ast_handler import ASTHandler
+from versionizer.automated_test_executor import AutomatedTestExecutor
+from versionizer.automated_test_generator import AutomatedTestGenerator
+from versionizer.function_node import FunctionNode
+from versionizer.git_handler import GitHandler
+from versionizer.parsed_ast_builder import ParsedASTBuilder
+from versionizer.utils import print_banner
 
 parser = argparse.ArgumentParser(
-    description="Automatically generate test cases to ensure the correctness of migrate code.",
+    description="Automatically generate test cases to ensure the correctness of "
+                "changed code.",
+)
+
+parser.add_argument(
+    "--project-path",
+    help="The directory which contains the python module. If the module argument is not"
+         " specified, Versionizer will generate tests for all non-test Python files in"
+         " this directory.",
+    required=True
 )
 
 parser.add_argument(
     "-m",
     "--module",
-    help="The python file to generate tests for.",
-    required=True
-)
-
-parser.add_argument(
-    "--project-path",
-    help="The directory to generate tests for.",
-    required=True
+    help="The python file to generate tests for. If empty, Versionizer will generate "
+         "tests for all files in the module.",
+    required=False
 )
 
 parser.add_argument(
@@ -76,7 +81,8 @@ parser.add_argument(
 parser.add_argument(
     "--algorithm",
     default="WHOLE_SUITE",
-    help="Specify which algorithm to use for test generation. Defaults to whole suite tests, similar to EvoSuite.",
+    help="Specify which algorithm to use for test generation. Defaults to whole suite "
+         "tests, similar to EvoSuite.",
     choices=["RANDOM", "MOSA", "RANDOM_SEARCH", "WHOLE_SUITE"],
 )
 
@@ -94,31 +100,27 @@ def validate_args(args):
         parser.error("Must specify a previous commit to generate tests for.")
 
 
-def main():
-    args = parser.parse_args()
-    validate_args(args)
-    print_banner()
-    git_handler: GitHandler = GitHandler(args.previous_commit, args.current_commit)
+def run_for_file(project_path, file, git_handler, args):
     git_handler.checkout_first_commit()
-
-    file_path_to_test = os.path.join(args.project_path, args.module)
+    file_path_to_test = os.path.join(project_path, file)
 
     ast_handler_1 = ASTHandler(file_path_to_test)
     git_handler.checkout_second_commit()
     ast_handler_2 = ASTHandler(file_path_to_test)
     ast_differ = ASTDiffer(ast_handler_1, ast_handler_2)
-    different_nodes: Set[GraphNode] = ast_differ.get_changed_function_nodes()
+    different_nodes: Set[FunctionNode] = ast_differ.get_changed_function_nodes()
 
     git_handler.checkout_first_commit()
     parsed_ast_builder: ParsedASTBuilder = ParsedASTBuilder(file_path_to_test,
-                                                            different_nodes)
+                                                            different_nodes,
+                                                            ast_handler_1.get_function_dependents())
     parsed_ast_builder.build_source()
 
     if args.generate_tests:
         generate_tests(args)
 
-    test_file_name = "test_" + args.module
-    test_file_path = os.path.join(args.project_path, test_file_name)
+    test_file_name = "test_" + file
+    test_file_path = os.path.join(project_path, test_file_name)
     with open(test_file_path, "r+") as f:
         test_file_lines = f.readlines()
 
@@ -126,8 +128,34 @@ def main():
     with open(test_file_path, "w") as f:
         f.writelines(test_file_lines)
 
+
+def main():
+    args = parser.parse_args()
+    args.output_path = args.project_path
+    print_banner()
+    validate_args(args)
+
+    git_handler: GitHandler = GitHandler(args.previous_commit, args.current_commit)
+    git_handler.stash_changes_if_necessary()
+    try:
+        # Handle working with a single file
+        if args.module:
+            run_for_file(args.project_path, args.module, git_handler, args)
+        # Handle working with an entire directory
+        else:
+            for dirpath, dirnames, filenames in os.walk(args.project_path):
+                for file in filenames:
+                    if file.endswith(".py") and "test" not in file and "init" not in file:
+                        run_for_file(args.project_path, file, git_handler, args)
+
+    except Exception as e:
+        logging.error(e)
+    finally:
+        git_handler.return_to_head()
+        git_handler.pop_stash_if_needed()
+
     if args.run_tests:
-        AutomatedTestExecutor.run_tests(test_file_path)
+        AutomatedTestExecutor.run_tests(args.project_path)
 
 
 if __name__ == "__main__":

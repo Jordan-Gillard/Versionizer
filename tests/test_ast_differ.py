@@ -1,37 +1,24 @@
 import os
-import tempfile
 
 import pytest
 
+from tests.shared_functions import generate_temp_file_with_content
 from versionizer.ast_differ import ASTDiffer
+from versionizer.ast_handler import ASTHandler
 
 
 @pytest.fixture
 def temp_file1():
-    fd, path = tempfile.mkstemp()
-    try:
-        func = """
-def foo():
-    return 1
-                    """
-        with os.fdopen(fd, 'w') as tmp:
-            tmp.write(func)
-        yield path
-    finally:
-        os.remove(path)
+    func = "def foo():\n    return 1"
+    for filename in generate_temp_file_with_content(func):
+        yield filename
 
 
 @pytest.fixture
 def temp_file2():
-    tmp = tempfile.NamedTemporaryFile()
-    func = """
-def foo():
-    return 2
-    """
-    tmp.write(str.encode(func))
-    tmp.seek(0)
-    yield tmp.name
-    tmp.close()
+    func = "def foo():\n    return 2"
+    for filename in generate_temp_file_with_content(func):
+        yield filename
 
 
 def test_temp_file_fixtures(temp_file1):
@@ -39,11 +26,18 @@ def test_temp_file_fixtures(temp_file1):
 
 
 def test_get_changed_function_nodes_returns_nothing_for_no_change(temp_file1):
-    differ = ASTDiffer(temp_file1, temp_file1)
+    handler1 = ASTHandler(temp_file1)
+    handler2 = ASTHandler(temp_file1)
+    differ = ASTDiffer(handler1, handler2)
     assert not differ.get_changed_function_nodes()
 
 
 def test_get_changed_function_nodes_returns_node_that_was_changed(temp_file1,
                                                                   temp_file2):
-    differ = ASTDiffer(temp_file1, temp_file2)
-    assert len(differ.get_changed_function_nodes()) == 1
+    handler1 = ASTHandler(temp_file1)
+    handler2 = ASTHandler(temp_file2)
+    differ = ASTDiffer(handler1, handler2)
+    diff_nodes = differ.get_changed_function_nodes()
+    assert len(diff_nodes) == 1
+    different_node = diff_nodes.pop()
+    assert different_node.name == "foo"

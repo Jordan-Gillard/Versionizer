@@ -1,4 +1,4 @@
-class GraphNode:
+class FunctionNode:
     def __init__(self, node):
         self.name = node.name
         self.num_params = len(node.args.args)
@@ -8,7 +8,7 @@ class GraphNode:
     def __eq__(self, other):
         if self is other:
             return True
-        if not isinstance(other, GraphNode):
+        if not isinstance(other, FunctionNode):
             return False
         return (self.name == other.name and
                 self.num_params == other.num_params and
