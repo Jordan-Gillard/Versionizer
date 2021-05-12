@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "versionizer"
-version = "0.1.0"
+version = "0.1.1"
 description = "Versionizer is a tool for automatically generating unit tests for functions that change between two commits."
 authors = ["Jordan Gillard <jordan-gillard@outlook.com>"]
 

@@ -20,9 +20,6 @@ class GitHandler:
         self.was_dirty = False
 
     def _checkout_commit(self, commit: Commit):
-        # TODO: If there are unsaved changes in the current working tree, we should
-        #  stash these changes and then get them back when we eventually return to
-        #  the head.
         self.repo.head.reference = commit
         self.revert_all_changes()
 
