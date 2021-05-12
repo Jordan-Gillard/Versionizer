@@ -1,5 +1,5 @@
 def foo():
-    return 2
+    return 3
 
 
 def bar():
