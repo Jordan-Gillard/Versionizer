@@ -65,6 +65,8 @@ def test_build_source_which_includes_indirectly_dependent_funcs():
                 builder = ParsedASTBuilder(full_path_tempfile_1, func_nodes, deps)
                 builder.build_source()
                 with open(full_path_tempfile_1, 'r') as f:
+                    # TODO: is this actually testing that the new source was correct? Or
+                    #  did it not change because git reverted changes?
                     content = f.read()
                     assert content.replace("\n", "") == (func1 + func2 + func3).replace(
                         "\n", "")

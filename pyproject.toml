@@ -1,8 +1,10 @@
 [tool.poetry]
 name = "versionizer"
-version = "0.1.2"
+version = "0.1.3"
 description = "Versionizer is a tool for automatically generating unit tests for functions that change between two commits."
 authors = ["Jordan Gillard <jordan-gillard@outlook.com>"]
+license = "Apache-2.0"
+repository = "https://github.com/Jordan-Gillard/Versionizer"
 
 [tool.poetry.dependencies]
 python = "^3.8"
